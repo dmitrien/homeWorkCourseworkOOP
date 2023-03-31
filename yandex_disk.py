@@ -24,18 +24,16 @@ class YaUploader:
         print(f'Список загружаемых файлов: {", ".join(uploaded_files)}')
         # Загружаем файлы
         for file in json_info_photo:
-            path_to_file = str(file['file_name']) + '.jpg'
-            params = {'path': 'VKPhoto/' + path_to_file, 'overwrite': 'true'}
-            response = requests.get(upload_url, headers=headers, params=params)
-            data = response.json()
-            href = data.get('href')
-            response = requests.put(href, data=path_to_file)
-            if response.status_code == 201:
+            file_name = str(file['file_name']) + '.jpg'
+            url_to_file = file['url_photo']
+            params = {'url': url_to_file, 'path': 'VKPhoto/' + file_name}
+            response = requests.post(upload_url, headers=headers, params=params)
+            if response.status_code == 202:
                 info_file = {
-                    'file_name': path_to_file,
+                    'file_name': file['file_name'],
                     'size': file['size']
                 }
-                print(f'Файл успешно загружен: {path_to_file}')
+                print(f'Файл успешно загружен: {file_name}')
                 loger_json['successfull_uploaded'].append(info_file)
 
         with open('loger_json.json', 'w', encoding='utf-8') as json_file:

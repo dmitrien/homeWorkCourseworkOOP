@@ -37,7 +37,8 @@ class VKdownoloader:
         for photo in all_photo[-numbers_of_photos:]:
             max_height = max(dict_h['height'] for dict_h in photo['sizes'])
             max_width = max(dict_w['width'] for dict_w in photo['sizes'])
-            count_likes = photo['likes']['count']
+            count_likes = str(photo['likes']['count'])
+            count = 0
             for photo_max in photo['sizes']:
                 if photo_max['height'] == max_height and photo_max['width'] == max_width:
                     name_sizes = photo_max['type']
@@ -48,8 +49,11 @@ class VKdownoloader:
                         'url_photo': link_photo
 
                     }
+                    count += 1
+                    for name_file in json_info:
+                        if info_photo['file_name'] == name_file['file_name']:
+                            info_photo['file_name'] = str(count_likes) + '_'
                     json_info.append(info_photo)
                     break
-            urllib.request.urlretrieve(info_photo['url_photo'], str(info_photo['file_name']) + '.jpg')
 
         return json_info
